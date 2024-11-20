@@ -32,12 +32,9 @@ class AuthController
         $sql = "SELECT * FROM users WHERE email = :email";
         $result = $this->db->execute($sql, [':email' => $email]);
 
-        // Fetch the user record (assuming fetch is available in your execute function)
         $user = $result->fetch();
 
-        // Check if the user exists and verify the password
         if ($user && password_verify($password, $user['password'])) {
-            // Start session and set the user data
             session_start();
             $_SESSION['user'] = $user;  // Or you can store other user details if needed
 

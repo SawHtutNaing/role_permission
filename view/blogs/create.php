@@ -15,10 +15,7 @@
                 <textarea name="content" id="content" class="mt-1 p-2 block w-full border border-gray-300 rounded-md" rows="5" required></textarea>
             </div>
 
-            <div class="mb-4">
-                <label for="author" class="block text-sm font-medium text-gray-700">Author</label>
-                <input type="text" name="author" id="author" class="mt-1 p-2 block w-full border border-gray-300 rounded-md" required>
-            </div>
+          
 
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Save Blog</button>
         </form>

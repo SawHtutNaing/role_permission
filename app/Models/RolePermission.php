@@ -12,6 +12,6 @@ class RolePermission
     public static function where($column, $value)
     {
         $db = new Database();
-        return $db->fetchAll("SELECT * FROM role_permissions WHERE $column = :value", ['value' => $value]);
+        return $db->fetchAll("SELECT * FROM role_permission WHERE $column = :value", ['value' => $value]);
     }
 }

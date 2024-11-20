@@ -10,9 +10,10 @@ class Role
     public function permissions()
     {
         $db = new Database();
-        // Fetch permission IDs associated with this role
-        $permissions = $db->fetchAll("SELECT permission_id FROM role_permissions WHERE role_id = :role_id", ['role_id' => $this->id]);
-        // Extract only the permission IDs into a flat array
+       
+        $permissions = $db->fetchAll("SELECT permission_id FROM role_permission WHERE role_id = :role_id", ['role_id' => $this->id]);
+
+       
         return array_column($permissions, 'permission_id');
     }
 
@@ -61,11 +62,11 @@ class Role
         $db = new Database();
 
         // Remove all current permissions
-        $db->execute("DELETE FROM role_permissions WHERE role_id = :role_id", ['role_id' => $this->id]);
+        $db->execute("DELETE FROM role_permission WHERE role_id = :role_id", ['role_id' => $this->id]);
 
         // Assign new permissions
         foreach ($permissions as $permission_id) {
-            $db->execute("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)", [
+            $db->execute("INSERT INTO role_permission (role_id, permission_id) VALUES (:role_id, :permission_id)", [
                 'role_id' => $this->id,
                 'permission_id' => $permission_id
             ]);

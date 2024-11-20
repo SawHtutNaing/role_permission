@@ -23,11 +23,13 @@ if ($uri === '/') {
 } elseif ($uri == '/login/auth') {
     $controller = new AuthController();
     $controller->authenticate();
-} elseif ($uri == '/register') {
-    $controller = new AuthController();
+}
+//  elseif ($uri == '/register') {
+//     $controller = new AuthController();
 
-    $controller->register();
-} elseif ($uri == '/register/store') {
+//     $controller->register();
+// }
+ elseif ($uri == '/register/store') {
     $controller = new AuthController();
 
     $controller->storeRegister();
@@ -140,6 +142,18 @@ elseif($uri == '/users'){
     $controller->index();
 
 }
+elseif ($uri == '/users/create') {
+    $controller = new UserController();
+
+    $controller->create();
+} 
+elseif ($uri == '/users/store') {
+    $controller = new UserController();
+
+    $controller->store($_POST);
+} 
+
+
  elseif (preg_match('/\/users\/edit\/(\d+)/', $uri, $matches)) {
     $controller = new UserController();
     $id = $matches[1];

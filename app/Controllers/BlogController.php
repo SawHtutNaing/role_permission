@@ -5,30 +5,36 @@ class BlogController
 {
     // Example user (you can fetch this from your auth system)
     private $currentUser;
+    private $user_id ;
 
     public function __construct()
     {
         // Simulating the authenticated user
         $this->currentUser = $this->getAuthenticatedUser();
+        $this->user_id  = $this->currentUser['id'];
+        
     }
 
     // Show all blog posts
     public function index()
     {
-        // Check if the user has permission to view blogs
-        if (!$this->userHasPermission('view_blogs')) {
+        if (!$this->userHasPermission('blog_view')) {
             echo "You don't have permission to view blogs.";
             exit;
         }
 
         $blogs = Blog::all();
+        $create_permission = $this->userHasPermission('blog_create');
+        $update_permission = $this->userHasPermission('blog_update');
+        $delete_permission = $this->userHasPermission('blog_delete');
+
         require __DIR__ . '/../../view/blogs/index.php';
     }
 
     // Show a form to create a new blog post
     public function create()
     {
-        if (!$this->userHasPermission('create_blog')) {
+        if (!$this->userHasPermission('blog_create')) {
             echo "You don't have permission to create a blog.";
             exit;
         }
@@ -39,7 +45,7 @@ class BlogController
     // Store a new blog post in the database
     public function store()
     {
-        if (!$this->userHasPermission('create_blog')) {
+        if (!$this->userHasPermission('blog_create')) {
             echo "You don't have permission to create a blog.";
             exit;
         }
@@ -47,7 +53,7 @@ class BlogController
         $blog = new Blog();
         $blog->title = $_POST['title'];
         $blog->content = $_POST['content'];
-        $blog->author = $_POST['author'];
+        $blog->user_id = $this->user_id;
         $blog->save();
 
         header('Location: /blogs');
@@ -56,7 +62,7 @@ class BlogController
     // Show the form to edit an existing blog post
     public function edit($id)
     {
-        if (!$this->userHasPermission('edit_blog')) {
+        if (!$this->userHasPermission('blog_update')) {
             echo "You don't have permission to edit this blog.";
             exit;
         }
@@ -68,15 +74,17 @@ class BlogController
     // Update an existing blog post
     public function update($id)
     {
-        if (!$this->userHasPermission('edit_blog')) {
+        if (!$this->userHasPermission('blog_update')) {
             echo "You don't have permission to update this blog.";
             exit;
         }
 
         $blog = Blog::find($id);
+        // die(print_r($blog));
         if ($blog) {
             $blog->title = $_POST['title'];
             $blog->content = $_POST['content'];
+            $blog->user_id = $blog->user_id;
             $blog->save();
         } else {
             echo "Blog not found";
@@ -88,7 +96,7 @@ class BlogController
     // Delete a blog post
     public function delete($id)
     {
-        if (!$this->userHasPermission('delete_blog')) {
+        if (!$this->userHasPermission('blog_delete')) {
             echo "You don't have permission to delete this blog.";
             exit;
         }
@@ -110,11 +118,11 @@ class BlogController
         
         $db = new Database();
         $query = "SELECT COUNT(*) as count 
-                  FROM role_permissions rp 
+                  FROM role_permission rp 
                   JOIN permissions p ON rp.permission_id = p.id 
                   WHERE rp.role_id = :role_id AND p.name = :permission";
         $result = $db->fetchOne($query, [
-            'role_id' => 8,
+            'role_id' => $roleId,
             'permission' => $permission
         ]);
 
